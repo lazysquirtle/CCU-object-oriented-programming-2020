@@ -1,3 +1,8 @@
+//***********************************************************************************************
+//It is a network simulator
+//Most of the code was given by my professor; I was only asked to finish the part below line 900 
+//***********************************************************************************************
+
 #include <iostream>
 #include <map>
 #include <queue>
@@ -16,8 +21,6 @@ using namespace std;
 vector <vector <int>> GetInputStream(int& NumOfNode, int& NumOfEdge, int& Duration);
 vector <vector <int>> GetPublishers(int& NumOfPubs);
 vector <vector <int>> GetSubscribers(int& NumOfSubs);
-
-
 
 #define SET(func_name,type,var_name,_var_name) void func_name(type _var_name) { var_name = _var_name ;} 
 #define GET(func_name,type,var_name) type func_name() const { return var_name ;}
@@ -451,8 +454,8 @@ map<string, node::node_generator*> node::node_generator::prototypes;
 map<unsigned int, node*> node::id_node_table;
 
 void node::add_phy_neighbor(unsigned int _id) {
-	if (id == _id) return;																			// if the two nodes are the same...
-	if (id_node_table.find(_id) == id_node_table.end()) return;		// if this node does not exist
+	if (id == _id) return;						// if the two nodes are the same...
+	if (id_node_table.find(_id) == id_node_table.end()) return;	// if this node does not exist
 	if (phy_neighbors.find(_id) != phy_neighbors.end()) return;	// if this neighbor has been added
 	phy_neighbors[_id] = true;
 }
@@ -816,7 +819,6 @@ public:
 };
 
 LS3D_node::LS3D_node_generator LS3D_node::LS3D_node_generator::sample;
-
 // the function is used to add an initial event
 void add_initial_event(bool isPub, unsigned int src, unsigned int dst, unsigned int pro = 0, unsigned t = 0) {
 	if (node::id_to_node(src) == nullptr || (dst != BROCAST_ID && node::id_to_node(dst) == nullptr)) {
@@ -890,12 +892,13 @@ void node::send(packet *p) { // this function is called by event; not for the us
 
 		packet *p2 = packet::packet_generator::replicate(p);
 		e_data._pkt = p2;
-
-		recv_event *e = dynamic_cast<recv_event*> (event::event_generator::generate("recv_event", trigger_time, (void*)&e_data)); // send the packet to the neighbor
+		// send the packet to the neighbor
+		recv_event *e = dynamic_cast<recv_event*> (event::event_generator::generate("recv_event", trigger_time, (void*)&e_data)); 
 		if (e == nullptr) cerr << "event type is incorrect" << endl;
 	}
 	packet::discard(p);
 }
+
 // you have to write the code below
 void LS3D_node::recv_handler(packet *p) {
 	// this is a simple example
@@ -978,11 +981,11 @@ void LS3D_node::recv_handler(packet *p) {
 	for (Density_Table_iter = Density_Table.begin(); Density_Table_iter != Density_Table.end(); Density_Table_iter++) {
 		unsigned int First = Density_Table_iter->first;
 		int Second = Density_Table_iter->second;
-		if (Second >= Max_Density && hdr->check_visited_node(First) == false) {									//for bigger ID
+		if (Second >= Max_Density && hdr->check_visited_node(First) == false) {					//for bigger ID
 			Max_Density = Second;
 			Node_With_Max_Density = First;
 		}
-		if (Second < min_Density && hdr->check_visited_node(First) == false) {									//for smaller ID
+		if (Second < min_Density && hdr->check_visited_node(First) == false) {				//for smaller ID
 			min_Density = Second;
 			Node_With_min_Density = First;
 		}
@@ -995,20 +998,20 @@ void LS3D_node::recv_handler(packet *p) {
 		if (Publisher == true) {
 			if (Max_Density == Density_Table[This_NodeID]) {
 				if (hdr->getIsHilltopOnce() == true) {
-					unsigned int SrcNodeID = hdr->getSrcID();					//store the data
+					unsigned int SrcNodeID = hdr->getSrcID();				//store the data
 					unsigned int ProxyID = pld->getProxyID();
 					this->add_node_proxy(SrcNodeID, ProxyID);
 
 				}
 				else {
-					unsigned int SrcNodeID = hdr->getSrcID();					//store the data
+					unsigned int SrcNodeID = hdr->getSrcID();				//store the data
 					unsigned int ProxyID = pld->getProxyID();
 					this->add_node_proxy(SrcNodeID, ProxyID);
 
-					hdr->SetMode(2);																	//change mode
+					hdr->SetMode(2);							//change mode
 					hdr->setIsHilltopOnce(true);
 
-					hdr->mark_visited_node(This_NodeID);							//add DFS path
+					hdr->mark_visited_node(This_NodeID);					//add DFS path
 					hdr->push_visited_node(This_NodeID);
 
 					hdr->setNexID(Node_With_min_Density);					//looking for Density min/Max
@@ -1016,11 +1019,11 @@ void LS3D_node::recv_handler(packet *p) {
 
 					pkt->setHeader(hdr);
 					pkt->setPayload(pld);
-					send_handler(pkt);																	//send
+					send_handler(pkt);								//send
 				}
 			}
 			else {
-				hdr->mark_visited_node(This_NodeID);								//add DFS path
+				hdr->mark_visited_node(This_NodeID);							//add DFS path
 				hdr->push_visited_node(This_NodeID);
 
 				hdr->setNexID(Node_With_Max_Density);							//looking for Density min/Max
@@ -1028,14 +1031,14 @@ void LS3D_node::recv_handler(packet *p) {
 
 				pkt->setHeader(hdr);
 				pkt->setPayload(pld);
-				send_handler(pkt);																		//send
+				send_handler(pkt);									//send
 			}
 		}
 
 		else {
 			if (Max_Density == Density_Table[This_NodeID]) {
 				if (hdr->getIsHilltopOnce() == true) {
-					unsigned int Dest = hdr->getDstID();								//check information exists
+					unsigned int Dest = hdr->getDstID();						//check information exists
 					unsigned int Proxy = get_node_proxy(Dest);
 					if (Proxy != BROCAST_ID)
 						cout << "The proxy of node " << Dest << " is " << Proxy << endl;
@@ -1043,28 +1046,28 @@ void LS3D_node::recv_handler(packet *p) {
 						cout << "The proxy of node " << Dest << " not found!" << endl;
 				}
 				else {
-					unsigned int Dest = hdr->getDstID();								//check information exists
+					unsigned int Dest = hdr->getDstID();						//check information exists
 					unsigned int Proxy = get_node_proxy(Dest);
 					if (Proxy != BROCAST_ID)
 						cout << "The proxy of node " << Dest << " is " << Proxy << endl;
 					else {
-						hdr->SetMode(2);																	//change mode
+						hdr->SetMode(2);							//change mode
 						hdr->setIsHilltopOnce(true);
 
-						hdr->mark_visited_node(This_NodeID);							//add DFS path
+						hdr->mark_visited_node(This_NodeID);					//add DFS path
 						hdr->push_visited_node(This_NodeID);
 
-						hdr->setNexID(Node_With_min_Density);						//looking for Density min/Max
+						hdr->setNexID(Node_With_min_Density);					//looking for Density min/Max
 						hdr->setPreID(This_NodeID);
 
 						pkt->setHeader(hdr);
 						pkt->setPayload(pld);
-						send_handler(pkt);																	//send
+						send_handler(pkt);							//send
 					}
 				}
 			}
 			else {
-				hdr->mark_visited_node(This_NodeID);								//add DFS path
+				hdr->mark_visited_node(This_NodeID);							//add DFS path
 				hdr->push_visited_node(This_NodeID);
 
 				hdr->setNexID(Node_With_Max_Density);							//looking for Density min/Max
@@ -1072,7 +1075,7 @@ void LS3D_node::recv_handler(packet *p) {
 
 				pkt->setHeader(hdr);
 				pkt->setPayload(pld);
-				send_handler(pkt);																		//send
+				send_handler(pkt);									//send
 			}
 
 		}
@@ -1080,14 +1083,14 @@ void LS3D_node::recv_handler(packet *p) {
 	case 2:
 		if (Publisher == true) {
 			if (min_Density == Density_Table[This_NodeID]) {
-				hdr->SetMode(1);																	//change mode
+				hdr->SetMode(1);									//change mode
 
-				if (count == Record_Neighbor.size()) {								//All neighbors marked visited
+				if (count == Record_Neighbor.size()) {							//All neighbors marked visited
 					unsigned int PreNode = hdr->pop_visited_node();
 					hdr->setNexID(PreNode);
 				}
 				else
-					hdr->setNexID(Node_With_Max_Density);					//looking for Density min/Max
+					hdr->setNexID(Node_With_Max_Density);						//looking for Density min/Max
 				hdr->setPreID(This_NodeID);
 
 				hdr->mark_visited_node(This_NodeID);							//add DFS path
@@ -1095,47 +1098,47 @@ void LS3D_node::recv_handler(packet *p) {
 
 				pkt->setHeader(hdr);
 				pkt->setPayload(pld);
-				send_handler(pkt);																	//send
+				send_handler(pkt);									//send
 
 			}
 			else {
 				hdr->mark_visited_node(This_NodeID);							//add DFS path
 				hdr->push_visited_node(This_NodeID);
 
-				hdr->setNexID(Node_With_min_Density);						//lookig for Density min/Max
+				hdr->setNexID(Node_With_min_Density);							//lookig for Density min/Max
 				hdr->setPreID(This_NodeID);
 
 				pkt->setHeader(hdr);
 				pkt->setPayload(pld);
-				send_handler(pkt);																	//send
+				send_handler(pkt);									//send
 
 			}
 		}
 		else {
 			if (min_Density == Density_Table[This_NodeID]) {
-				hdr->SetMode(1);																	//change mode
+				hdr->SetMode(1);									//change mode
 
 				hdr->mark_visited_node(This_NodeID);							//add DFS path
 				hdr->push_visited_node(This_NodeID);
 
-				hdr->setNexID(Node_With_Max_Density);						//lookig for Density min/Max
+				hdr->setNexID(Node_With_Max_Density);							//lookig for Density min/Max
 				hdr->setPreID(This_NodeID);
 
 				pkt->setHeader(hdr);
 				pkt->setPayload(pld);
-				send_handler(pkt);																	//send
+				send_handler(pkt);									//send
 
 			}
 			else {
 				hdr->mark_visited_node(This_NodeID);							//add DFS path
 				hdr->push_visited_node(This_NodeID);
 
-				hdr->setNexID(Node_With_min_Density);						//lookig for Density min/Max
+				hdr->setNexID(Node_With_min_Density);							//lookig for Density min/Max
 				hdr->setPreID(This_NodeID);
 
 				pkt->setHeader(hdr);
 				pkt->setPayload(pld);
-				send_handler(pkt);																	//send
+				send_handler(pkt);									//send
 
 			}
 		}
