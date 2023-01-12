@@ -48,14 +48,14 @@ public:
 	GET(getPreID, unsigned int, preID);
 	GET(getNexID, unsigned int, nexID);
 
-	virtual string type() = 0;				//=0���ܥL�b�o�����O�U�O�@�ӷ����A���b�o�̤��|��@�A�᭱�ݭl�����O����@
+	virtual string type() = 0;				
 
 	// factory concept: generate a header
 	class header_generator {
 		// lock the copy constructor
-		header_generator(header_generator &) {}							//�ƻs�@���غc�l
+		header_generator(header_generator &) {}							
 		// store all possible types of header
-		static map<string, header_generator*> prototypes;			//�@�ΦP�سq�T��w
+		static map<string, header_generator*> prototypes;			
 	protected:
 		// allow derived class to use it
 		header_generator() {}
@@ -461,7 +461,6 @@ void node::del_phy_neighbor(unsigned int _id) {
 	phy_neighbors.erase(_id);
 }
 
-
 class mycomp {
 	bool reverse;
 
@@ -778,7 +777,6 @@ void send_event::print() const {
 		<< endl;
 }
 
-
 class LS3D_node : public node {
 	map<unsigned int, unsigned int> storage; // it is used to store the other nodes' proxy information
 	map<unsigned int, bool> two_hop_neighbors; // you can use this variable to record the node's 2-hop neighbors 
@@ -865,7 +863,6 @@ void add_initial_event(bool isPub, unsigned int src, unsigned int dst, unsigned 
 
 // send_handler function is used to transmit packet p based on the information in the header
 // Note that the packet p will not be discard after send_handler ()
-
 void node::send_handler(packet *p) {
 	packet *_p = packet::packet_generator::replicate(p);
 	send_event::send_data e_data;
@@ -899,7 +896,6 @@ void node::send(packet *p) { // this function is called by event; not for the us
 	}
 	packet::discard(p);
 }
-
 // you have to write the code below
 void LS3D_node::recv_handler(packet *p) {
 	// this is a simple example
