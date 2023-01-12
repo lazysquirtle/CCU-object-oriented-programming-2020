@@ -13,23 +13,23 @@ int main() {
 	int NumOfNode = 0;
 	int NumOfEdge = 0;
 
-	std::vector<std::vector<int>> inputStream;							//¿é¤JÃD¥Ø­n¨D
+	std::vector<std::vector<int>> inputStream;				//è¼¸å…¥é¡Œç›®è¦æ±‚
 	inputStream = GetinputStream();
-	NumOfNode = inputStream[0][0];												//Node¼Æ¶q¦b[0][0]
-	NumOfEdge = inputStream[0][1];												//Edge¼Æ¶q¦b[0][1]
+	NumOfNode = inputStream[0][0];						//Nodeæ•¸é‡åœ¨[0][0]
+	NumOfEdge = inputStream[0][1];						//Edgeæ•¸é‡åœ¨[0][1]
 	
-																				/*
+	/*
 	Node *sensor = new Node[NumOfNode];
 	for (int i = 0; i < NumOfNode; i++) {
-		sensor[i].inputID(i);																		//¦s¤@¤U¥L­ÌªºID
-		sensor[i].inputNeighbor(NumOfEdge, inputStream);		//¦s¤@¤U¥L­Ìªº¾F©~
+		sensor[i].inputID(i);						//å­˜ä¸€ä¸‹ä»–å€‘çš„ID
+		sensor[i].inputNeighbor(NumOfEdge, inputStream);		//å­˜ä¸€ä¸‹ä»–å€‘çš„é„°å±…
 	}
 	*/
 
 	MISNode *sensor = new MISNode[NumOfNode];
 	for (int i = 0; i < NumOfNode; i++) {
-		sensor[i].inputID(i);																		//¦s¤@¤U¥L­ÌªºID
-		sensor[i].inputNeighbor(NumOfEdge, inputStream);		//¦s¤@¤U¥L­Ìªº¾F©~
+		sensor[i].inputID(i);						//å­˜ä¸€ä¸‹ä»–å€‘çš„ID
+		sensor[i].inputNeighbor(NumOfEdge, inputStream);		//å­˜ä¸€ä¸‹ä»–å€‘çš„é„°å±…
 	}
 
 	bool flag = true;
@@ -51,34 +51,34 @@ int main() {
 	std::vector <int >NotInCDS;
 	for (int index = 0; index < NumOfNode; index++) {
 		if (sensor[index].getMIS() == true)
-			CDS.push_back(index);															//§âMISnode(²{¦b¦bCDS¸Ì)¦s¶ivector
+			CDS.push_back(index);					//æŠŠMISnode(ç¾åœ¨åœ¨CDSè£¡)å­˜é€²vector
 	}
 
 	for (int i = 0; i < CDS.size(); i++) {
-		BFS(sensor, CDS[i], NumOfNode);													//§âCDS¸Ìªºnode°µBFS
-		sensor[CDS[i]].AODV(sensor, NumOfNode, CDS);						//°µAODV¥h³s±µ¨â­ÓMIS¸`ÂI
-		sensor[CDS[i]].setvisited();																//³]MISnode¬°visited
+		BFS(sensor, CDS[i], NumOfNode);					//æŠŠCDSè£¡çš„nodeåšBFS
+		sensor[CDS[i]].AODV(sensor, NumOfNode, CDS);			//åšAODVå»é€£æ¥å…©å€‹MISç¯€é»
+		sensor[CDS[i]].setvisited();					//è¨­MISnodeç‚ºvisited
 	}
 
-	CDS.clear();																								//¥ı²MªÅCDS¸ÌªºªF¦è
+	CDS.clear();								//å…ˆæ¸…ç©ºCDSè£¡çš„æ±è¥¿
 	for (int i = 0; i < NumOfNode; i++) {
 		if (sensor[i].getvisit() == true)
-			CDS.push_back(i);																			//§âi©ñ¤JCDS¸Ì	
+			CDS.push_back(i);					//æŠŠiæ”¾å…¥CDSè£¡	
 		else
 			NotInCDS.push_back(i);
 	}
 
 	for (int i = 0; i < NotInCDS.size(); i++)
 	{
-		sensor[NotInCDS[i]].inputRoutingTable(sensor, NumOfNode);		//¥ı«ØNotInCDSªºRoutingTable(¤@©w­n¥ı«Ø)
+		sensor[NotInCDS[i]].inputRoutingTable(sensor, NumOfNode);	//å…ˆå»ºNotInCDSçš„RoutingTable(ä¸€å®šè¦å…ˆå»º)
 		//sensor[NotInCDS[i]].showRoutingTable();
 	}
 
 	for (int i = 0 ; i < CDS.size() ; i++) {
-		BFS(sensor, CDS[i], NumOfNode);													//§âCDS¸Ìªºnode°µBFS
-		sensor[CDS[i]].inputRoutingTable(sensor,NumOfNode);			//¦A«ØCDSªºRoutingTable
+		BFS(sensor, CDS[i], NumOfNode);					//æŠŠCDSè£¡çš„nodeåšBFS
+		sensor[CDS[i]].inputRoutingTable(sensor,NumOfNode);		//å†å»ºCDSçš„RoutingTable
 		//sensor[CDS[i]].showRoutingTable();
-		sensor[CDS[i]].setproxy();																	//³]¤@¤UCDSªºproxy
+		sensor[CDS[i]].setproxy();					//è¨­ä¸€ä¸‹CDSçš„proxy
 	}
 	
 
