@@ -7,10 +7,10 @@
 using namespace std;
 vector <vector <unsigned int >>VectorStorePath ;
 
-class NODE {																													//ª«¥óNODE
+class NODE {																													//ç‰©ä»¶NODE
 public:
-	NODE();																														//«Øºc¤l
-	unsigned int  SendTo(unsigned int Dst,unsigned int NodeMinus);			//¤@°ï¨ç¦¡¡A¥\¯à¦p¦W¦r
+	NODE();																														//å»ºæ§‹å­
+	unsigned int  SendTo(unsigned int Dst,unsigned int NodeMinus);			//ä¸€å †å‡½å¼ï¼ŒåŠŸèƒ½å¦‚åå­—
 	unsigned int  GetValue(void);
 	unsigned int  GetDistance(void);
 	void StoreNeighbor(unsigned int NeighborNode);
@@ -20,7 +20,7 @@ public:
 	vector<unsigned int>* GetNeighbor(void);
 	//void PrintRoutingTable(unsigned int Node);
 
-private:																															//ª«¥ó°ò¥»¸ê®Æ
+private:																															//ç‰©ä»¶åŸºæœ¬è³‡æ–™
 	unsigned int ID;
 	unsigned int Distance;
 	vector <unsigned int > Neighbor;
@@ -29,10 +29,10 @@ private:																															//ª«¥ó°ò¥»¸ê®Æ
 
 NODE::NODE() {
 	ID = 0;																														//ID
-	Distance = 0;																											//¶ZÂ÷¬Y¤@­Ónodeªº¶ZÂ÷
+	Distance = 0;																											//è·é›¢æŸä¸€å€‹nodeçš„è·é›¢
 }
 
-void NODE::StoreNeighbor(unsigned int NeighborNode) {							//³o­Ónode©M¨º¨Çnode¬O¾F©~
+void NODE::StoreNeighbor(unsigned int NeighborNode) {					//é€™å€‹nodeå’Œé‚£äº›nodeæ˜¯é„°å±…
 	Neighbor.push_back(NeighborNode);
 }
 
@@ -52,13 +52,13 @@ unsigned int NODE::GetDistance() {
 	return Distance;
 }
 
-vector<unsigned int>* NODE::GetNeighbor() {															//±o¨ì¾F©~¦³­ş¨Ç
+vector<unsigned int>* NODE::GetNeighbor() {						//å¾—åˆ°é„°å±…æœ‰å“ªäº›
 	vector <unsigned int >* VectorOut = new vector<unsigned int>;
 	*VectorOut = Neighbor;
 	return VectorOut;
 }
 
-unsigned int  NODE::SendTo(unsigned int Dst,unsigned int NodeMinus) {		//¦Ñ®vµ¹ªº¨ç¦¡
+unsigned int  NODE::SendTo(unsigned int Dst,unsigned int NodeMinus) {			//è€å¸«çµ¦çš„å‡½å¼
 	unsigned int result = 0;
 	for (int i = 0; i < NodeMinus; i++) {
 		if (RoutingTable[i][0] == Dst)
@@ -76,39 +76,39 @@ void NODE::PrintRoutingTable(unsigned int Node) {
 	cout << endl << endl;
 }
 */
-void NODE::MakeARoutingTable(NODE* ptr,unsigned int Node) {						//«Øtable¡Atable¦³ -²×ÂI--¤U­Ó¸`ÂI-2Äæ
+void NODE::MakeARoutingTable(NODE* ptr,unsigned int Node) {				//å»ºtableï¼Œtableæœ‰ -çµ‚é»--ä¸‹å€‹ç¯€é»-2æ¬„
 			
 	vector <vector <unsigned int >>OuterVector;									
 	for (int i = 0; i < Node; i++) {
 
-		if ((ptr + i)->GetValue() == ID)																				//¤£¥Î«Ø²×ÂI¬°¦Û¤vªº¨º¦C
+		if ((ptr + i)->GetValue() == ID)																				//ä¸ç”¨å»ºçµ‚é»ç‚ºè‡ªå·±çš„é‚£åˆ—
 			continue;
 
 		vector <unsigned int>InnerVec;
 		unsigned int Dis = (ptr + i)->GetDistance();
 
-		if ((ptr + i)->Distance == 1) {																					//¶ZÂ÷¬°1(¾F©~)´Nª½±µ¦s¨ìnext
+		if ((ptr + i)->Distance == 1) {																					//è·é›¢ç‚º1(é„°å±…)å°±ç›´æ¥å­˜åˆ°next
 			InnerVec.push_back(i);
 			InnerVec.push_back(i);
 			OuterVector.push_back(InnerVec);
 		}
-		else {																																//¶ZÂ÷¤£¬°1´N¥h§ä¾F©~¶ZÂ÷¬°1ªº
+		else {																																//è·é›¢ä¸ç‚º1å°±å»æ‰¾é„°å±…è·é›¢ç‚º1çš„
 			vector <unsigned int >*fuck;
 			vector <unsigned int >::iterator iter;
-			fuck = (ptr + i)->GetNeighbor();																			//fuck «ü¦V¤@±Æ¾F©~
+			fuck = (ptr + i)->GetNeighbor();																			//fuck æŒ‡å‘ä¸€æ’é„°å±…
 
 
 			for (iter = (*fuck).begin(); iter != (*fuck).end(); ) {
-				if ((ptr + *iter)->Distance == 1) {																	//¦pªG§ä¨ì¾F©~¶ZÂ÷¬°1ªº¤F
+				if ((ptr + *iter)->Distance == 1) {																	//å¦‚æœæ‰¾åˆ°é„°å±…è·é›¢ç‚º1çš„äº†
 					InnerVec.push_back(i);
 					InnerVec.push_back(*iter);
-					OuterVector.push_back(InnerVec);															//¦s¶i¥h
+					OuterVector.push_back(InnerVec);															//å­˜é€²å»
 					break;
 				}
 				else {
-					if ((ptr + *iter)->Distance == Dis - 1) {														//¦pªG³£§ä¤£¨ì
-						fuck = (ptr + *iter)->GetNeighbor();														//§ä³Ì¤pIDªº¨º­Ó
-						iter = (*fuck).begin();																					//­«³]¾F©~(¾F©~ÅÜ¦¨³Ì¤pIDªº¨º­Ó)
+					if ((ptr + *iter)->Distance == Dis - 1) {														//å¦‚æœéƒ½æ‰¾ä¸åˆ°
+						fuck = (ptr + *iter)->GetNeighbor();														//æ‰¾æœ€å°IDçš„é‚£å€‹
+						iter = (*fuck).begin();																					//é‡è¨­é„°å±…(é„°å±…è®Šæˆæœ€å°IDçš„é‚£å€‹)
 						Dis = Dis - 1;
 						continue;
 					}
@@ -130,7 +130,7 @@ NODE* CreateObject(unsigned int NumOfNode);
 int main() {
 
 	NODE* ptr = NULL;
-	unsigned int NodeNumber = 0, PathNumber = 0;									//¤@ª½¿é¤J			
+	unsigned int NodeNumber = 0, PathNumber = 0;					//ä¸€ç›´è¼¸å…¥			
 	cin >> NodeNumber  >>PathNumber ;
 
 	for (unsigned int i = 0 ; i < PathNumber ; i++) {											
@@ -143,11 +143,11 @@ int main() {
 		VectorStorePath.push_back(VectorStore);
 	}
 
-	ptr = CreateObject(NodeNumber) ;															//®Ú¾Ú¿é¤J«Ø¥ßª«¥ó¡Bºô¸ô
+	ptr = CreateObject(NodeNumber) ;						//æ ¹æ“šè¼¸å…¥å»ºç«‹ç‰©ä»¶ã€ç¶²è·¯
 	ContructNodeNeighbor(ptr, NodeNumber, PathNumber) ;
 	
 	for (unsigned int i = 0; i < NodeNumber; i++) {
-		BFS(i, NodeNumber, ptr);																			//°µ§¹BFS«á«Ø¥ßTABLE
+		BFS(i, NodeNumber, ptr);																			//åšå®ŒBFSå¾Œå»ºç«‹TABLE
 		(ptr + i)->MakeARoutingTable(ptr,NodeNumber);
 		//(ptr + i)->PrintRoutingTable(NodeNumber);
 	}
@@ -156,7 +156,7 @@ int main() {
 	cin >> PathYouWant ;
 	
 	vector <vector<unsigned int>>VecSrcAndDst ;
-	for (unsigned int i = 0; i < PathYouWant; i++) {										//¿é¤J§A­nªºpath
+	for (unsigned int i = 0; i < PathYouWant; i++) {				//è¼¸å…¥ä½ è¦çš„path
 		
 		unsigned int No = 0, Start = 0, End = 0;
 		cin >> No >> Start >> End;
@@ -167,13 +167,13 @@ int main() {
 		VecSrcAndDst.push_back(Vec);
 	}
 
-	for (unsigned int i = 0; i < PathYouWant ; i++) {										//§ä¸ô®|¥Îªº
-		unsigned int Cur_ID = VecSrcAndDst[ i ][1];										//Source
-		unsigned int Dst_ID = VecSrcAndDst[ i ][2];											//Destination
+	for (unsigned int i = 0; i < PathYouWant ; i++) {				//æ‰¾è·¯å¾‘ç”¨çš„
+		unsigned int Cur_ID = VecSrcAndDst[ i ][1];				//Source
+		unsigned int Dst_ID = VecSrcAndDst[ i ][2];				//Destination
 		cout << i << '\t';
 		while (Cur_ID != Dst_ID) {																			//Source!=Destination
 			cout << Cur_ID << '\t' ;
-			Cur_ID = (ptr + Cur_ID)->SendTo(Dst_ID, NodeNumber-1);		//§äªü
+			Cur_ID = (ptr + Cur_ID)->SendTo(Dst_ID, NodeNumber-1);		//æ‰¾é˜¿
 		}
 		cout << Cur_ID << endl;
 	}
@@ -181,15 +181,15 @@ int main() {
 	return 0;
 }
 
-NODE*  CreateObject(unsigned int NumOfNode) {									//create the object  NumberOfNode 
+NODE*  CreateObject(unsigned int NumOfNode) {						//create the object  NumberOfNode 
 
-	NODE *PTR = new NODE[NumOfNode];													//ptr point to the six node's head 
+	NODE *PTR = new NODE[NumOfNode];						//ptr point to the six node's head 
 	for (unsigned int i = 0; i < NumOfNode; i++)
 		(PTR + i)->SetValue(i);
 	return PTR;
 }
 
-void ContructNodeNeighbor(NODE* ptr,unsigned int Node,unsigned int Path) {						//	record node neighbor  
+void ContructNodeNeighbor(NODE* ptr,unsigned int Node,unsigned int Path) {		//record node neighbor  
 	
 	for (int i = 0; i < Path; i++) {
 		for (unsigned int j = 0; j < Node; j++) {
