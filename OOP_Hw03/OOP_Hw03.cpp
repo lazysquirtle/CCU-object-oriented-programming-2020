@@ -37,10 +37,8 @@ const unsigned int ONE_HOP_DELAY = 10;
 const unsigned int BROCAST_ID = UINT_MAX;
 
 // BROCAST_ID means that all neighbors are receivers; UINT_MAX is the maximum value of unsigned int
-
 class header {
 public:
-
 	virtual ~header() {}
 	SET(setSrcID, unsigned int, srcID, _srcID);
 	SET(setDstID, unsigned int, dstID, _dstID);
